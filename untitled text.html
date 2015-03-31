@@ -8,18 +8,25 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="mobile-web-app-status-bar-style" content="white">
-		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="manifest" href="manifest.json">
 		
 	</head>	
 	<body>
 		
-		<div id='controls' style='padding:10px;background-color:grey'>
-			<button id='zoom-in'>Zoom in</button>
-			<button id='zoom-out'>Zoom out</button>
-			<button id='home'>Take me home tonight</button>
-			<button id='marker'>Mark your territory</button>
+		<div id='controls' style='padding:10px;background-color:dimgrey;' class="container-fluid">
+
+				<button class="btn btn-default" id='zoom-in'>Zoom in</button>
+				<button class="btn btn-default"id='zoom-out'>Zoom out</button>
+
+				<button class="btn btn-default"id='home'>Take me home tonight</button>
+				<button class="btn btn-default"id='marker'>Mark your territory</button>
+
 		</div>
-		<div id="map-canvas"></div>
+		<div id="map-canvas" class="container-fluid"></div>
 		
 		<script type="text/javascript"
 		  src="https://maps.googleapis.com/maps/api/js">
@@ -73,7 +80,7 @@
 				title:"Hello World!"
 				})
 			});
-			
+
 //		  console.log(home);
 		</script>
 	</body>
