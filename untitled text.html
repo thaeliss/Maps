@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style type="text/css">
+		  html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+		</style>
+		<title>Playing With Maps!</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-status-bar-style" content="white">
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+		
+	</head>	
+	<body>
+		
+		<div id='controls' style='padding:10px;background-color:grey'>
+			<button id='zoom-in'>Zoom in</button>
+			<button id='zoom-out'>Zoom out</button>
+			<button id='home'>Take me home tonight</button>
+			<button id='marker'>Mark your territory</button>
+		</div>
+		<div id="map-canvas"></div>
+		
+		<script type="text/javascript"
+		  src="https://maps.googleapis.com/maps/api/js">
+		</script>
+		<script type="text/javascript">
+			
+			var homePlace = new google.maps.LatLng(59.347, 18.073);
+			var map;
+			
+			var zoomLevel = 15;
+		  	function initialize() {
+		  	var mapDiv = document.getElementById('map-canvas');
+			var mapOptions = {
+			  center: { lat: 59.32316, lng: 18.067},
+			  zoom: zoomLevel,
+			  mapTypeId: google.maps.MapTypeId.HYBRID,
+			  disableDefaultUI: true,
+			};
+			map = new google.maps.Map(mapDiv, mapOptions);
+							
+			map.setTilt(45);
+			map.setHeading(0);
+			
+			}
+			
+			google.maps.event.addDomListener(window, 'load', initialize);
+			
+			var home = document.getElementById('home');
+			var zoom_in = document.getElementById('zoom-in');
+			var zoom_out = document.getElementById('zoom-out');
+			var marker = document.getElementById('marker');
+			
+			
+					
+			google.maps.event.addDomListener(home, 'click', function() {
+				map.setCenter(homePlace)
+			});
+			google.maps.event.addDomListener(zoom_in, 'click', function() {
+				map.setZoom(zoomLevel++)
+			});
+			google.maps.event.addDomListener(zoom_out, 'click', function() {
+				map.setZoom(zoomLevel--)
+			});
+			google.maps.event.addDomListener(marker, 'click', function() {
+				var place = map.getCenter();
+				var marker = new google.maps.Marker({
+				draggable:true,
+				animation: google.maps.Animation.DROP,
+				position: place,
+				map: map,
+				title:"Hello World!"
+				})
+			});
+			
+//		  console.log(home);
+		</script>
+	</body>
+</html>
