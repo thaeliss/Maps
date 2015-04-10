@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style type="text/css">
+		  html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+		</style>
+		<title>Playing With Maps!</title>
+<!--		<meta http-equiv="Cache-control" content="no-cache">  public, private, no-cache, no-store -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="mobile-web-app-status-bar-style" content="white">
+		<link rel="manifest" href="manifest.json">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="icon" sizes="192x192" href="nice-highres.png">
+		
+	</head>	
+	<body>
+		
+		<div id='controls' style='padding:10px;background-color:black'>
+			<button class="btn btn-default" id='zoom-in'>Zoom in</button>
+			<button class="btn btn-default"id='zoom-out'>Zoom out</button>
+			<button class="btn btn-default"id='home'>Go home</button>
+			<button class="btn btn-default"id='away'>Go away</button>
+			<button class="btn btn-default"id='circle'>Circle</button>
+			<button class="btn btn-default"id='arrow'>Arrow</button>
+		</div>
+		<div id="map-canvas"></div>
+		
+		<script type="text/javascript"
+		  src="https://maps.googleapis.com/maps/api/js?sensor=true">
+		</script>
+		
+		<script type="text/javascript">		
+//			var homePlace = new google.maps.LatLng(59.347, 18.073);
+			var homePlace;
+			var favoritePlace = new google.maps.LatLng(59.570165, 18.329509400000006);
+			var map;
+			var zoomLevel = 15;
+			
+			var goldStar = {
+				path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
+				fillColor: 'yellow',
+				fillOpacity: 0.8,
+				scale: 1,
+				strokeColor: 'gold',
+				strokeWeight: 14
+			};
+			  
+			var contentString = '<div id="content">'+
+			'<div id="siteNotice">'+
+			'</div>'+
+			'<h1 id="firstHeading" class="firstHeading">Lilla Harsjön</h1>'+
+			'<div id="bodyContent">'+
+			'<p>Linnéa campade här över påsken. Det var kallt och hagel-snöade, men vi drack vin och ägglikör så det gjorde inget.</p>'+
+			'</div>'+
+			'</div>';
+			
+			var infowindow = new google.maps.InfoWindow({
+      			content: contentString
+  			});
+			
+		  	function initialize() {
+		  		getLocation();
+		  		var mapDiv = document.getElementById('map-canvas');
+				var mapOptions = {
+//					center: homePlace,
+			  		zoom: zoomLevel,
+			  		mapTypeId: google.maps.MapTypeId.SATELLITE,
+			  		disableDefaultUI: true,
+				};
+				map = new google.maps.Map(mapDiv, mapOptions);
+							
+				map.setTilt(45);
+				map.setHeading(0);		
+			}
+			
+			google.maps.event.addDomListener(window, 'load', initialize);
+			
+			var home = document.getElementById('home');
+			var zoom_in = document.getElementById('zoom-in');
+			var zoom_out = document.getElementById('zoom-out');
+			var circle = document.getElementById('circle');
+			var arrow = document.getElementById('arrow');
+			var away = document.getElementById('away');
+			
+			var marker = new google.maps.Marker({
+				position: favoritePlace,
+				title:"Hello World!"
+			});
+					
+			google.maps.event.addDomListener(home, 'click', function() {
+				map.setCenter(homePlace)
+			});
+			google.maps.event.addDomListener(away, 'click', function() {
+				map.setCenter(favoritePlace),
+				infowindow.open(map,away);
+			});
+			google.maps.event.addDomListener(zoom_in, 'click', function() {
+				map.setZoom(zoomLevel++)
+			});
+			google.maps.event.addDomListener(zoom_out, 'click', function() {
+				map.setZoom(zoomLevel--)
+			});
+			google.maps.event.addDomListener(circle, 'click', function() {
+				var place = map.getCenter();
+				var marker = new google.maps.Marker({
+					draggable:true,
+					icon: {path: google.maps.SymbolPath.CIRCLE, scale: 10},
+					//animation: google.maps.Animation.DROP,
+					position: place,
+					map: map
+				})
+			});
+			google.maps.event.addDomListener(arrow, 'click', function() {
+				var place = map.getCenter();
+				var marker = new google.maps.Marker({
+					draggable:true,
+					icon: {path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, scale: 10},
+					//animation: google.maps.Animation.DROP,
+					position: place,
+					map: map
+				})
+			});
+		
+			function getLocation() {
+			    if (navigator.geolocation) {
+			        navigator.geolocation.getCurrentPosition(setPosition);		//setPosition = callback function with a Position object as its only input parameter	        
+			    } else { 
+			         console.log("Error with Geolocation!");
+			    }
+			}
+			//set homePlace and centers map on current location
+			function setPosition(position) {
+				homePlace = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+				map.setCenter(homePlace);	
+			}		
+			
+			marker.setMap(map);	
+		</script>
