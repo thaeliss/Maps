@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<title>RSSSSSSS</title>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	</head>
+	
+	<body>
+		<div id="list" style="width:50%">
+		</div>
+		<div id="detail" style="width:50%">
+		slfiglsdkjhbzoduhfbdsn
+		</div>
+		<script type="text/javascript">
+			
+			google.load("feeds", "1");
+			function initialize() {
+				var feed = new google.feeds.Feed('http://www.rendip.com/c/food/rss');
+				feed.setResultFormat(google.feeds.Feed.MIXED_FORMAT);
+				feed.setNumEntries(10);
+				feed.load(function(result) {
+					if (!result.error) {
+						for (var i = 0; i < result.feed.entries.length; i++) {
+							var entry = result.feed.entries[i];
+							var mediaEntries = entry.xmlNode.getElementsByTagNameNS('*','thumbnail');
+								for (var j = 0; j < mediaEntries.length; j++) {
+									var mediaEntry = mediaEntries[j];
+									var mediaThumbnailUrl = mediaEntry.attributes.getNamedItem('url').value
+									//console.log(mediaThumbnailUrl);
+								}
+							}	
+						//own stuff
+						for(j=0;j<result.feed.entries.length;j++){
+							var mydiv = document.createElement('div');
+							var para = document.createElement('p');
+							var text = document.createTextNode(result.feed.entries[j].title);
+							//console.log(text);
+							para.appendChild(text);
+							mydiv.appendChild(para);
+							document.getElementById("list").appendChild(mydiv);
+				
+							//var div = document.getElementById("list");
+							//div.innerHTML += result.feed.entries[j].title
+				
+
+							//	$('<p>').html(result.feed.entries[j].title)
+
+						}
+					console.log(result.feed.entries);
+					}
+				});
+		}
+		google.setOnLoadCallback(initialize);
+		</script> 
+
+	</body>
+</html>
