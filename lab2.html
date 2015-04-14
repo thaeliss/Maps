@@ -2,6 +2,7 @@
 	<head>
 		<title>RSSSSSSS</title>
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 	</head>
 	
@@ -10,25 +11,58 @@
 			<h1>List!</h1>
 			<button id="food" class="btn btn-default">Food!</button>
 			<button id="business" class="btn btn-default">Business!</button>
+			<div id="textlist"></div>
 		</div>
 		<div id="detail" style="width:48%;float:right;border-style:solid;border-width:5px;" class="container-fluid">
 			<h1>Details!</h1>
 		</div>
-		<script type="text/javascript">
-
-			function details(obj){
-					console.log(obj);
 		
-			//		console.log("i details");	
-			//		console.log(obj.getAttribute("val"));	
+		
+		<script type="text/javascript">
+		
+			//Create clickable links in the list view based on user selected category
+			function linkList(searchvalue){
+				
+				document.getElementById("textlist").innerHTML = "";	
+				
+				//var feed = new google.feeds.Feed('http://www.rendip.com/c/'+choice+'/rss');
+				var feed = new google.feeds.Feed('http://www.rendip.com/'+searchvalue+'rss');
+				feed.setResultFormat(google.feeds.Feed.MIXED_FORMAT);
+				feed.setNumEntries(10);
+				feed.load(function(result) {					
+					if (!result.error) {
+						for(var j=0;j<result.feed.entries.length;j++){
+							
+							var para = document.createElement('p');
+							var text = document.createTextNode(result.feed.entries[j].title);
+							
+							var a = document.createElement('button');
+							a.setAttribute("class", 'btn btn-link');
+							a.setAttribute("style", 'width:100%');
+							a.appendChild(text);
+							
+							var obj = result.feed.entries[j];
+							a.onclick = (function(obj){
+								return function(){
+									details(obj);
+								};
+							})(obj);
+							
+							para.appendChild(a);
+							document.getElementById("textlist").appendChild(para);		
+						}
+					}
+				});
+			}
+
+			//Make content for the detailed view based on link/button pressed
+			function details(obj){	
 					document.getElementById("detail").innerHTML = "";
 					var mediaEntries = obj.xmlNode.getElementsByTagNameNS('*','thumbnail');
 					for (var j = 0; j < mediaEntries.length; j++) {
 						var mediaEntry = mediaEntries[j];
 						var mediaThumbnailUrl = mediaEntry.attributes.getNamedItem('url').value
-						//console.log(mediaThumbnailUrl);
-					}
-					//console.log(mediaThumbnailUrl);		
+					}		
 					var div = document.createElement('div');
 					var title = document.createTextNode(obj.title);
 					var image = document.createElement('img');
@@ -38,65 +72,27 @@
 					document.getElementById("detail").appendChild(div);
 			}
 			
-			//Skriv en function som ritar skiten
 			
 			google.load("feeds", "1");
 			function initialize() {
-				var choice = food;
-				$( "#food" ).click(function() {
-  					choice = 'food';
-				});
-				var feed = new google.feeds.Feed('http://www.rendip.com/c/'+choice+'/rss');
-				feed.setResultFormat(google.feeds.Feed.MIXED_FORMAT);
-				feed.setNumEntries(10);
-				feed.load(function(result) {
-					if (!result.error) {
-						for (var i = 0; i < result.feed.entries.length; i++) {
-							var entry = result.feed.entries[i];
-							var mediaEntries = entry.xmlNode.getElementsByTagNameNS('*','thumbnail');
-								for (var j = 0; j < mediaEntries.length; j++) {
-									var mediaEntry = mediaEntries[j];
-									var mediaThumbnailUrl = mediaEntry.attributes.getNamedItem('url').value
-									//console.log(mediaThumbnailUrl);
-								}
-							}	
-						//own stuff
-						for(j=0;j<result.feed.entries.length;j++){
-							var para = document.createElement('p');
-							var text = document.createTextNode(result.feed.entries[j].title);
-							
-							//console.log(result.feed.entries[j]);
-							
-							var a = document.createElement('button');
-							a.setAttribute("class", 'btn btn-link');
-							a.setAttribute("style", 'width:100%');
-							a.appendChild(text);
-							console.log(j);
-							//a.href=result.feed.entries[j].link;
-							var obj = result.feed.entries[j];
-							console.log(obj);
-							a.onclick = (function(obj){
-								return function(){
-									details(obj);
-								};
-							})(obj);
-							
-							/*var button = document.createElement('button');
-							var text = document.createTextNode(result.feed.entries[j].title);
-							button.appendChild*/
-							
-							para.appendChild(a);
-							document.getElementById("list").appendChild(para);
-				
 
-						}
-					console.log(result.feed.entries);
-					}
+				linkList('');
+				
+				$( "#food" ).click(function() {
+  					var choice = 'c/food/';
+					linkList(choice);
 				});
+				
+				$( "#business" ).click(function() {
+  					var choice = 'c/business/';
+					linkList(choice);
+				});
+
 		}
 		google.setOnLoadCallback(initialize);
 		</script> 
 		
-		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+	<!--  	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script> 			-->
+	
 	</body>
 </html>
