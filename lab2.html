@@ -1,32 +1,71 @@
 <html>
 	<head>
 		<title>RSSSSSSS</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 	</head>
 	
-	<body>
-		<div id="list" style="width:48%;float:left;border-style:solid;border-width:5px;" class="container-fluid">
-			<h1>List!</h1>
-			<button id="newest" class="btn btn-default">Newest!</button>
-			<button id="food" class="btn btn-default">Food!</button>
-			<button id="business" class="btn btn-default">Business!</button>
-			<div id="textlist"></div>
-		</div>
-		<div id="detail" style="width:48%;float:right;border-style:solid;border-width:5px;" class="container-fluid">
-			<h1>Details!</h1>
+	<body>		
+		<div id="main">
 		</div>
 		
 		
 		<script type="text/javascript">
+		var choice = '';
 		
 			//Create clickable links in the list view based on user selected category
 			function linkList(searchvalue){
 				
-				document.getElementById("textlist").innerHTML = "";	
+				document.getElementById("main").innerHTML = "";	
 				
-				//var feed = new google.feeds.Feed('http://www.rendip.com/c/'+choice+'/rss');
+				//Make the headline an object
+				var headline = document.createElement('h1');
+				headline.appendChild(document.createTextNode('List!'));
+				
+				
+				//Here we make the buttons as elements
+				var newest = document.createElement('button');
+				newest.setAttribute('id', 'newest');
+				newest.setAttribute('class', 'btn btn-default');
+				newest.appendChild(document.createTextNode('Newest!'));
+				
+				var food = document.createElement('button');
+				food.setAttribute('id', 'food');
+				food.setAttribute('class', 'btn btn-default');
+				food.appendChild(document.createTextNode('Food!'));
+				
+				var business = document.createElement('button');
+				business.setAttribute('id', 'business');
+				business.setAttribute('class', 'btn btn-default');
+				business.appendChild(document.createTextNode('Business!'));
+				
+				
+				//Here we append the headline and the button to the "main" div
+				document.getElementById("main").appendChild(headline);
+				document.getElementById("main").appendChild(newest);
+				document.getElementById("main").appendChild(food);
+				document.getElementById("main").appendChild(business);
+				
+				
+				//Making the buttons clickable and working
+				$( "#newest" ).click(function() {
+  					choice = '';
+					linkList(choice);
+				});
+				
+				$( "#food" ).click(function() {
+  					choice = 'c/food/';
+					linkList(choice);
+				});
+				
+				$( "#business" ).click(function() {
+  					choice = 'c/business/';
+					linkList(choice);
+				});
+				
+				//The actual feed
 				var feed = new google.feeds.Feed('http://www.rendip.com/'+searchvalue+'rss');
 				feed.setResultFormat(google.feeds.Feed.MIXED_FORMAT);
 				feed.setNumEntries(10);
@@ -35,12 +74,13 @@
 						for(var j=0;j<result.feed.entries.length;j++){
 							
 							var para = document.createElement('p');
-							var text = document.createTextNode(result.feed.entries[j].title);
-							
+							//var text = document.createTextNode(result.feed.entries[j].title);
+							var text = result.feed.entries[j].title;
+							var shortText = document.createTextNode(text.substring(0,40)+'...');
 							var a = document.createElement('button');
 							a.setAttribute("class", 'btn btn-link');
 							a.setAttribute("style", 'width:100%');
-							a.appendChild(text);
+							a.appendChild(shortText);
 							
 							var obj = result.feed.entries[j];
 							a.onclick = (function(obj){
@@ -50,15 +90,27 @@
 							})(obj);
 							
 							para.appendChild(a);
-							document.getElementById("textlist").appendChild(para);		
+							
+							document.getElementById("main").appendChild(para);		
 						}
 					}
 				});
 			}
-
 			//Make content for the detailed view based on link/button pressed
 			function details(obj){	
-					document.getElementById("detail").innerHTML = "";
+					document.getElementById("main").innerHTML = "";
+					
+					var headline = document.createElement('h2');
+					headline.appendChild(document.createTextNode('Details!'));
+				
+					var button = document.createElement('button');
+					button.setAttribute('id', 'back');
+					button.setAttribute('class', 'btn btn-default');
+					button.appendChild(document.createTextNode('Back!'));
+					
+					document.getElementById("main").appendChild(headline);
+					document.getElementById("main").appendChild(button);
+					
 					var mediaEntries = obj.xmlNode.getElementsByTagNameNS('*','thumbnail');
 					for (var j = 0; j < mediaEntries.length; j++) {
 						var mediaEntry = mediaEntries[j];
@@ -70,31 +122,22 @@
 					image.src=mediaThumbnailUrl;
 					div.appendChild(title);
 					div.appendChild(image);
-					document.getElementById("detail").appendChild(div);
+					
+					document.getElementById("main").appendChild(div);
+					
+					$( "#back" ).click(function() {
+						console.log("i back");
+						console.log(choice);
+						//var choice = '';
+						linkList(choice);
+					});
 			}
 			
 			
 			google.load("feeds", "1");
 			function initialize() {
-
 				linkList('');
-				
-				$( "#newest" ).click(function() {
-  					var choice = '';
-					linkList(choice);
-				});
-				
-				$( "#food" ).click(function() {
-  					var choice = 'c/food/';
-					linkList(choice);
-				});
-				
-				$( "#business" ).click(function() {
-  					var choice = 'c/business/';
-					linkList(choice);
-				});
-
-		}
+			}
 		google.setOnLoadCallback(initialize);
 		</script> 
 		
@@ -102,3 +145,4 @@
 	
 	</body>
 </html>
+
